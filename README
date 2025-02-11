@@ -1,0 +1,7 @@
+1mb "L1" sram per core, banked
+120 cores
+5 cpus per core (1 din 3 compute 1 dout) - 600 riscvs!!!
+tile + vector engines?
+332 fp8 TOPS*** possibly 276 fp8 332 fp4? what type of fp8?
+8gb dram
+
