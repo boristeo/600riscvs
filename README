@@ -5,3 +5,14 @@ tile + vector engines?
 332 fp8 TOPS*** possibly 276 fp8 332 fp4? what type of fp8?
 8gb dram
 
+---
+
+
+lightmetal - flatbuffer capture and replay of traces!!!
+
+plan of action:
+1) try to turn loopback example into lightmetal flatbuf
+2) verify that it runs, find minimum amount of their library necessary (device enumeration, running flatbuf)
+3) inspect flatbuf internals, find kernel, try to recreate from scratch.
+4) verify that my kernel functionally identical
+5) repeat 3,4 for increasingly more complex metal programs (two kernels, using accel, etc)
