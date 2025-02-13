@@ -16,3 +16,13 @@ plan of action:
 3) inspect flatbuf internals, find kernel, try to recreate from scratch.
 4) verify that my kernel functionally identical
 5) repeat 3,4 for increasingly more complex metal programs (two kernels, using accel, etc)
+
+---
+
+New update:
+
+lightmetal is useless. Doesn't allow tracing anything fun.
+
+Found new way in - llrt. Has nice, real commands for address translation, firmware loading, looks like even kernel jit?
+
+all the api/tt-metalium/tt_* apis seem especially sane
