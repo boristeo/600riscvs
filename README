@@ -26,3 +26,21 @@ lightmetal is useless. Doesn't allow tracing anything fun.
 Found new way in - llrt. Has nice, real commands for address translation, firmware loading, looks like even kernel jit?
 
 all the api/tt-metalium/tt_* apis seem especially sane
+
+
+
+gs_hal.cpp
+---
+
+processor class - one of BRISC, NRISC, TRISC (no ERISC on grayskull)
+processor type - unused for BRISC and NRISC, 0-2 for TRISC
+HalJitBuildConfig with addresses for each subcore stored like this in processor_classes: [[BRISC],[NRISC],[TRISC0,TRISC1,TRISC2]]
+
+relocate_func_ changes MEM_LOCAL_BASE offset to local_init_addr, MEM_NRISC_IRAM_BASE offset to MEM_NRISC_IRAM_L1_BASE (what's an IRAM?)
+
+NOCS have some regs in NOC_OVERLAY, NOC0_REGS, NOC1_REGa. Hopefully I don't mess with these directly
+
+
+tt_memory.cpp: Has way to load elf file from path. Watch out for this to see where kernels are stored by compiler
+llrt.cpp: get_risc_binary
+test_compile_sets_kernel_binaries.cpp: I think this is what I want
