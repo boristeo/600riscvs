@@ -44,3 +44,10 @@ NOCS have some regs in NOC_OVERLAY, NOC0_REGS, NOC1_REGa. Hopefully I don't mess
 tt_memory.cpp: Has way to load elf file from path. Watch out for this to see where kernels are stored by compiler
 llrt.cpp: get_risc_binary
 test_compile_sets_kernel_binaries.cpp: I think this is what I want
+
+
+---
+
+No escape linking to full tt-metal. Had to steal some warning silence (SMH:/) flags and for some reason tt-metal default is to link to libc++?
+
+But it looks like now things work. Time for a bit of ablation...

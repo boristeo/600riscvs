@@ -1,22 +1,23 @@
 #include <tt-metalium/host_api.hpp>
-#include <tt-metalium/device.hpp>
+//#include <tt-metalium/device.hpp>
 #include <tt-metalium/bfloat16.hpp>
 
 #include <cstdio>
 
 using namespace tt::tt_metal;
+using namespace tt::tt_metal;
 
 int main() {
-  Device *device = CreateDevice(/*device_id=*/0);
-  CommandQueue& cq = detail::GetCommandQueue(device);
+  auto *device = CreateDevice(/*device_id=*/0);
+  CommandQueue& cq = device->command_queue();
   Program program = CreateProgram();
 
   // 12x10?
-  constexpr CoreCoord coord = {0, 0};
+  constexpr CoreCoord core_coord = {0, 0};
 
   // DataMovementConfig is interesting. Does every one of the little cpus get its own kernel? Or possible to load one to all?
   // I assume kernel goes somewhere in the 1mb core sram
-  KernelHandle dram_copy_kernel_id = CreateKernel(program, "loopback_dram_copy.cpp", coord,
+  KernelHandle dram_copy_kernel_id = CreateKernel(program, "loopback_dram_copy.cpp", core_coord,
       DataMovementConfig{.processor = DataMovementProcessor::RISCV_0, .noc = NOC::RISCV_0_default});
 
 
@@ -26,15 +27,15 @@ int main() {
   // Guessing the minimum size is one tile?
 
   // Auto allocated? Any control over placement? What is page_size for?
-  auto l1_config = tt_metal::InterleavedBufferConfig{.device=device, .size = dram_buffer_size, .page_size = dram_buffer_size, .buffer_type = tt_metal::BufferType::L1};
-  Buffer l1_buffer = CreateBuffer(l1_config);
+  auto l1_config = InterleavedBufferConfig{.device=device, .size = dram_buffer_size, .page_size = dram_buffer_size, .buffer_type = BufferType::L1};
+  auto l1_buffer = CreateBuffer(l1_config);
 
-  auto dram_config = tt_metal::InterleavedBufferConfig{.device=device, .size = dram_buffer_size, .page_size = dram_buffer_size, .buffer_type = tt_metal::BufferType::DRAM};
-  Buffer input_dram_buffer = CreateBuffer(dram_config);
-  Buffer output_dram_buffer = CreateBuffer(dram_config);
+  auto dram_config = InterleavedBufferConfig{.device=device, .size = dram_buffer_size, .page_size = dram_buffer_size, .buffer_type = BufferType::DRAM};
+  auto input_dram_buffer = CreateBuffer(dram_config);
+  auto output_dram_buffer = CreateBuffer(dram_config);
 
-  const uint32_t input_dram_buffer_addr = input_dram_buffer.address();
-  const uint32_t output_dram_buffer_addr = output_dram_buffer.address();
+  const uint32_t input_dram_buffer_addr = input_dram_buffer->address();
+  const uint32_t output_dram_buffer_addr = output_dram_buffer->address();
 
   const uint32_t input_bank_id = 0;
   const uint32_t output_bank_id = 0;
@@ -48,14 +49,14 @@ int main() {
 
   // Kernel args are just arbitrary vec of u32s
   const std::vector<uint32_t> runtime_args = {
-    l1_buffer.address(),
-    input_dram_buffer.address(),
+    l1_buffer->address(),
+    input_dram_buffer->address(),
     input_bank_id,
-    output_dram_buffer.address(),
+    output_dram_buffer->address(),
     output_bank_id,
-    l1_buffer.size()
+    l1_buffer->size()
   };
-  SetRuntimeArgs(program, dram_copy_kernel_id, core, runtime_args);
+  SetRuntimeArgs(program, dram_copy_kernel_id, core_coord, runtime_args);
 
   EnqueueProgram(cq, program, false);
   Finish(cq); // Nice
