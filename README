@@ -84,4 +84,35 @@ std::vector<uint16_t> l1_bank_to_noc_xy_;
 
 But hey at least the order seems correct... 
 
+---
+
+Yeah umd was user, kmd is kernel
+
+
+AAAH this makes sense!
+#define D DRAM_NODE_TYPE
+#define A ARC_NODE_TYPE
+#define P PCI_NODE_TYPE
+#define E EXTRA_ROUTER_NODE_TYPE
+#define T TENSIX_NODE_TYPE
+
+// This is indexed by NOC0 coordinates.
+static const u8 node_types[GRID_SIZE_Y][GRID_SIZE_X] = {
+	{ E, D, E, E, D, E, E, D, E, E, D, E, E, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ A, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ P, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, D, E, E, D, E, E, D, E, E, D, E, E, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+	{ E, T, T, T, T, T, T, T, T, T, T, T, T, },
+};
+
+Thats's why it looked sort of 1-indexed but an extra row. So probably all these D and E nodes are just skipped during init... Do they need init?
+
+
 
